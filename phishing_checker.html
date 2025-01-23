@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phishing URL Checker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        input[type="url"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 20px;
+            background: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Phishing URL Checker</h1>
+        <form id="urlForm">
+            <input type="url" id="urlInput" placeholder="Enter URL" required>
+            <button type="submit">Check URL</button>
+        </form>
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        document.getElementById('urlForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const urlInput = document.getElementById('urlInput').value;
+            const resultDiv = document.getElementById('result');
+
+            // Clear previous result
+            resultDiv.textContent = '';
+
+            try {
+                resultDiv.textContent = 'Checking...';
+
+                // Replace `YOUR_API_ENDPOINT` with the actual API endpoint
+                const response = await fetch('YOUR_API_ENDPOINT', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ url: urlInput }),
+                });
+
+                if (!response.ok) {
+                    throw new Error('Error querying the API.');
+                }
+
+                const data = await response.json();
+
+                // Display the result
+                if (data.isPhishing) {
+                    resultDiv.textContent = 'This URL is potentially a phishing site.';
+                    resultDiv.style.color = 'red';
+                } else {
+                    resultDiv.textContent = 'This URL appears to be safe.';
+                    resultDiv.style.color = 'green';
+                }
+            } catch (error) {
+                console.error(error);
+                resultDiv.textContent = 'An error occurred. Please try again.';
+                resultDiv.style.color = 'red';
+            }
+        });
+    </script>
+</body>
+</html>
